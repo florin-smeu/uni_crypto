@@ -1,0 +1,26 @@
+CC = /usr/bin/cc                                                                
+CFLAGS += -Wall -Wextra -O3 -fomit-frame-pointer -march=native -mtune=native -fPIC
+#CFLAGS += -DUSE_RDPMC                                                          
+NISTFLAGS = -O3 -fomit-frame-pointer -march=native -mtune=native -fPIC          
+RM = /bin/rm
+
+SOURCES = kem.c poly.c polyvec.c reduce.c cbd.c ntt.c verify.c indcpa.c
+SOURCESKECCAK = $(SOURCES) fips202.c symmetric-fips202.c
+SOURCESNINETIES = $(SOURCES) sha256.c sha512.c aes256ctr.c
+HEADERS = params.h poly.h polyvec.h reduce.h cbd.h ntt.h verify.h indcpa.h
+HEADERSKECCAK = $(HEADERS) fips202.h
+HEADERSNINETIES = $(HEADERS) aes256ctr.h sha2.h
+
+attack1024: $(SOURCESKECCAK) $(HEADERSKECCAK) attack.c randombytes.c randombytes.h
+	$(CC) $(CFLAGS) -DKYBER_K=4 $(SOURCESKECCAK) randombytes.c attack.c -o attack1024
+
+attack768: $(SOURCESKECCAK) $(HEADERSKECCAK) attack.c randombytes.c randombytes.h
+	$(CC) $(CFLAGS) -DKYBER_K=3 $(SOURCESKECCAK) randombytes.c attack.c -o attack768
+
+attack512: $(SOURCESKECCAK) $(HEADERSKECCAK) attack.c randombytes.c randombytes.h
+	$(CC) $(CFLAGS) -DKYBER_K=2 $(SOURCESKECCAK) randombytes.c attack.c -o attack512
+
+
+
+
+
